@@ -8,7 +8,7 @@ import subprocess
 
 def list_builds(search_query=None, sort_by_date=True):
     try:
-        api_url = "https://uupdump.net/listid.php"
+        api_url = "https://api.uupdump.net/listid.php"
         params = {
             "search": search_query if search_query else "",
             "sortByDate": 1 if sort_by_date else 0

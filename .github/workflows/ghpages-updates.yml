@@ -27,7 +27,7 @@ jobs:
           if (-not $branchExists) {
               Write-Host "Creating gh-pages branch..."
               git checkout --orphan gh-pages
-              git rm -rf .
+              # git rm -rf .
               "# gh-pages" | Out-File -FilePath README.md
               git add README.md
               git commit -m "Initialize gh-pages branch"
