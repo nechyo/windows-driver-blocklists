@@ -41,7 +41,7 @@ def get_download_url(uuid, max_retries=10, initial_delay=10):
             print(f"Available keys in files: {list(files.keys())}")
             file_info = None
             for key in files.keys():
-                if re.search(r"professional.*\.esd$", key, re.IGNORECASE):
+                if re.search(r'(MetadataESD_|)professional_en-us.esd$', key, re.IGNORECASE):
                     file_info = files[key]
                     break
 
