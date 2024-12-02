@@ -1,0 +1,107 @@
+name: Deploy Driver Policies
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  prepare-gh-pages:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check if gh-pages branch exists
+        id: check-branch
+        run: |
+          if ! git ls-remote --heads origin gh-pages; then
+            echo "Branch gh-pages does not exist. Creating it."
+            git checkout --orphan gh-pages
+            git rm -rf .
+            echo "# gh-pages" > README.md
+            git add README.md
+            git commit -m "Initialize gh-pages branch"
+            git push origin gh-pages
+          else
+            echo "Branch gh-pages exists."
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 tqdm
+        shell: powershell
+
+      - name: Download and extract policy
+        run: |
+          (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', 'scoop.ps1')
+          ./scoop.ps1 -RunAsAdmin
+          scoop install 7zip
+          
+          if (-not (Test-Path "assets")) {
+            New-Item -ItemType Directory -Path "assets" | Out-Null
+            python init_downloader.py
+          }
+
+          python check_update.py
+          python downloader.py
+          Get-ChildItem -Path "assets" -Filter *.esd | ForEach-Object {
+            Write-Host "Processing file $($_.FullName)"
+            ./process-esd.ps1 -EsdFile $_.FullName
+          }
+        shell: powershell
+
+      - name: Clone and setup WDACTools
+        run: |
+          # Clone the WDACTools repository if not already cloned
+          if (-not (Test-Path "WDACTools")) {
+            git clone https://github.com/mattifestation/WDACTools
+          } else {
+            Write-Host "WDACTools repository already cloned."
+          }
+
+          # Import the WDACTools module
+          $modulePath = Join-Path "WDACTools" "WDACTools.psm1"
+          if (-not (Test-Path $modulePath)) {
+            throw "WDACTools module not found in WDACTools directory"
+          }
+
+          Import-Module $modulePath
+          Write-Host "WDACTools module imported successfully."
+
+          # Convert .p7b files in assets to .xml
+          Get-ChildItem -Path "assets" -Filter *.p7b | ForEach-Object {
+            $binaryFilePath = $_.FullName
+            $xmlFilePath = Join-Path "assets" "$($_.BaseName).xml"
+
+            Write-Host "Converting $binaryFilePath to $xmlFilePath using WDACTools."
+            ConvertTo-WDACCodeIntegrityPolicy -BinaryFilePath $binaryFilePath -XmlFilePath $xmlFilePath
+            Write-Host "Conversion completed: $xmlFilePath"
+          }
+
+          # Clean up WDACTools directory
+          Remove-Item -Recurse -Force "WDACTools"
+          Write-Host "WDACTools directory removed."
+        shell: powershell
+
+      - name: Update latest UUID
+        run: |
+          Copy-Item current_uuid.txt latest.txt
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add latest.txt assets/*.xml
+          git commit -m "Update Code Integrity Policies"
+          git push
+        shell: powershell

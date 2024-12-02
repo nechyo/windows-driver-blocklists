@@ -1,6 +1,7 @@
 # process-esd.ps1
 param (
-    [string]$WorkingDir = "."
+    [string]$WorkingDir = ".",
+    [string]$EsdFile = "metadata.esd"
 )
 
 $ErrorActionPreference = "Stop"
@@ -10,7 +11,7 @@ $outputDir = Join-Path $WorkingDir "output"
 $tempDir = Join-Path $WorkingDir "temp"
 New-Item -ItemType Directory -Force -Path $outputDir, $tempDir | Out-Null
 
-$esdPath = Join-Path $tempDir "metadata.esd"
+$esdPath = Join-Path $tempDir $EsdFile
 $targetFile = "3\Windows\System32\CodeIntegrity\driversipolicy.p7b"
 
 try {
