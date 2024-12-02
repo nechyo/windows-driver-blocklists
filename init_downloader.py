@@ -68,27 +68,6 @@ def verify_sha256(file_path, expected_hash):
             sha256_hash.update(byte_block)
     return sha256_hash.hexdigest() == expected_hash
 
-def git_commit_and_push(title):
-    try:
-        # Configure Git
-        subprocess.run(["git", "config", "user.name", "GitHub Actions Bot"], check=True)
-        subprocess.run(["git", "config", "user.email", "actions@github.com"], check=True)
-        
-        # Checkout gh-pages branch
-        subprocess.run(["git", "fetch", "origin", "gh-pages"], check=True)
-        subprocess.run(["git", "checkout", "gh-pages"], check=True)
-        
-        # Add assets to the repository
-        subprocess.run(["git", "add", "assets/"], check=True)
-        commit_message = f"Update driver policy: {title}"
-        subprocess.run(["git", "commit", "-m", commit_message], check=True)
-        
-        # Push to gh-pages branch
-        subprocess.run(["git", "push", "origin", "gh-pages"], check=True)
-        print(f"Changes pushed to gh-pages branch successfully for {title}.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error during Git operations for {title}: {e}")
-
 def process_all_builds():
     try:
         temp_dir = "temp"
@@ -105,7 +84,8 @@ def process_all_builds():
         for build in builds:
             uuid = build.get("uuid")
             title = build.get("title", "Unknown Title")
-            file_name = f"{title.replace(' ', '_').replace(':', '-')}.esd"
+            safe_title = title.replace(' ', '_').replace(':', '-').replace('/', '_')
+            file_name = f"{safe_title}_{uuid}.esd"
             output_path = os.path.join(assets_dir, file_name)
             
             print(f"Processing build: {title} (UUID: {uuid})")
@@ -118,9 +98,6 @@ def process_all_builds():
                 if not verify_sha256(output_path, expected_hash):
                     raise Exception("SHA256 verification failed - file may be corrupted")
                 print(f"File integrity verified for {title}!")
-                
-                # Commit and push for this build
-                git_commit_and_push(title)
             except Exception as e:
                 print(f"Error processing build {title}: {e}")
                 if os.path.exists(output_path):
