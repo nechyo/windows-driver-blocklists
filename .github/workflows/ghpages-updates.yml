@@ -29,6 +29,8 @@ jobs:
               "# gh-pages" | Out-File -FilePath README.md
               git add README.md
               git commit -m "Initialize gh-pages branch"
+              git config user.name "GitHub Actions Bot"
+              git config user.email "actions@github.com"
               git push origin gh-pages
           } else {
               Write-Host "gh-pages branch exists."
