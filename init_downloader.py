@@ -27,7 +27,7 @@ def list_builds(search_query=None, sort_by_date=True):
     except RequestException as e:
         raise Exception(f"Error listing builds: {e}")
 
-def get_download_url(uuid, max_retries=6, initial_delay=10):
+def get_download_url(uuid, max_retries=15, initial_delay=10):
     api_url = f"https://api.uupdump.net/get.php?id={uuid}&lang=en-us&edition=professional"
     delay = initial_delay
     
