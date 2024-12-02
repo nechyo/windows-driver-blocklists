@@ -20,6 +20,8 @@ jobs:
       - name: Check if gh-pages branch exists
         id: check-branch
         run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
           $branchExists = git ls-remote --heads origin gh-pages
 
           if (-not $branchExists) {
@@ -29,8 +31,6 @@ jobs:
               "# gh-pages" | Out-File -FilePath README.md
               git add README.md
               git commit -m "Initialize gh-pages branch"
-              git config user.name "GitHub Actions Bot"
-              git config user.email "actions@github.com"
               git push origin gh-pages
           } else {
               Write-Host "gh-pages branch exists."
