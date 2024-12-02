@@ -27,8 +27,8 @@ def list_builds(search_query=None, sort_by_date=True):
     except RequestException as e:
         raise Exception(f"Error listing builds: {e}")
 
-def get_download_url(uuid, max_retries=15, initial_delay=10):
-    api_url = f"https://api.uupdump.net/get.php?id={uuid}&lang=en-us&edition=professional"
+def get_download_url(uuid, max_retries=10, initial_delay=10):
+    api_url = f"https://api.uupdump.net/get.php?id={uuid}&lang=en-us&edition=professional&autodl=2"
     delay = initial_delay
     
     for attempt in range(max_retries):
@@ -36,7 +36,16 @@ def get_download_url(uuid, max_retries=15, initial_delay=10):
             response = requests.get(api_url)
             response.raise_for_status()
             data = response.json()
-            file_info = data['response']['files']['MetadataESD_professional_en-us.esd']
+            possible_keys = ['MetadataESD_professional-en-us.esd', 'professional-en-us.esd']
+
+            file_info = None
+            for key in possible_keys:
+                if key in data['response']['files']:
+                    file_info = data['response']['files'][key]
+                    break
+
+            if not file_info:
+                raise Exception("Required file 'MetadataESD_professional-en-us.esd' or 'professional-en-us.esd' is not available for this build.")
             return file_info['url'], file_info['sha256']
         except RequestException as e:
             if response.status_code == 429 and attempt < max_retries - 1:
