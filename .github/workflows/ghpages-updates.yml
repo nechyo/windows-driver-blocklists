@@ -69,19 +69,18 @@ jobs:
 
       - name: Clone and setup WDACTools
         run: |
-          # Clone the WDACTools repository if not already cloned
           if (-not (Test-Path "WDACTools")) {
             git clone https://github.com/mattifestation/WDACTools
-          } else {
-            Write-Host "WDACTools repository already cloned."
           }
 
-          # Import the WDACTools module
+          # Locate WDACTools.psm1 file
           $modulePath = Join-Path "WDACTools" "WDACTools.psm1"
-          if (-not (Test-Path $modulePath)) {
-            throw "WDACTools module not found in WDACTools directory"
-          }
 
+          if (-not (Test-Path $modulePath)) {
+              Write-Error "WDACTools module not found. Please verify the repository structure."
+              exit 1
+          }
+          
           Import-Module $modulePath
           Write-Host "WDACTools module imported successfully."
 
