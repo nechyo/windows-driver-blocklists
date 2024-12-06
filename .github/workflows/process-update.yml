@@ -55,10 +55,16 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
+          tag: ${{ inputs.update_name }}
           file: output/driversipolicy.p7b
           body: |
-            ${{ inputs.update_name }}
+            Driver Policy Update: ${{ inputs.update_name }}
+
+            This release includes an updated driver blocklist policy file:
+            - Filename: driversipolicy.p7b
+            - Purpose: Enhanced security and compatibility.
+            
+            Please download the file and use it in your environment as necessary.
 
       - name: Update latest UUID
         run: |
