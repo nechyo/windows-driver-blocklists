@@ -1,7 +1,5 @@
 git clone https://github.com/nechyo/WDACTools
-cd WDACTools
-Import-Module .\WDACTools.psm1
-cd ..
+Import-Module .\WDACTools\WDACTools.psm1
 # output/*.p7b 파일을 blacklists/*.xml로 변환하는 스크립트
 $inputDirectory = "output"
 $outputDirectory = "blacklists"
