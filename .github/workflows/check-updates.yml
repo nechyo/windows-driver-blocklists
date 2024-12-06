@@ -49,5 +49,6 @@ jobs:
           workflow: process-update.yml
           inputs: |
             {
-              "update_name": "${{ steps.check.outputs.update_name }}"
+              "update_name": "${{ steps.check.outputs.update_name }}",
+              "current_uuid": "${{ steps.check.outputs.current_uuid }}",
             }
