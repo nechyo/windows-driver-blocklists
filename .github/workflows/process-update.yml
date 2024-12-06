@@ -51,6 +51,15 @@ jobs:
           retention-days: 90
           if-no-files-found: error
 
+      - name: Upload Driver Policy to Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: output/driversipolicy.p7b
+          body: |
+            ${{ inputs.update_name }}
+
       - name: Update latest UUID
         run: |
           Copy-Item current_uuid.txt latest.txt
