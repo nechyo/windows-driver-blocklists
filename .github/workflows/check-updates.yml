@@ -48,6 +48,7 @@ jobs:
         with:
           workflow: "Process Driver Policy Update"
           repo: nechyo/windows-driver-blocklists
+          ref: main
           inputs: |
             {
               "update_name": "${{ steps.check.outputs.update_name }}"
