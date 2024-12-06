@@ -47,6 +47,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: process-update.yml
+          repo: nechyo/windows-driver-blocklists
           inputs: |
             {
               "update_name": "${{ steps.check.outputs.update_name }}"
