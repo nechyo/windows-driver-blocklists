@@ -40,6 +40,7 @@ def check_updates():
     with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
         f.write(f"update_name={update_name}\n")
         f.write(f"update_needed={str(update_needed).lower()}\n")
+        f.write(f"current_uuid={current_uuid}")
     return update_name, update_needed
 
 if __name__ == '__main__':
