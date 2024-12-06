@@ -50,5 +50,5 @@ jobs:
           inputs: |
             {
               "update_name": "${{ steps.check.outputs.update_name }}",
-              "current_uuid": "${{ steps.check.outputs.current_uuid }}",
+              "current_uuid": "${{ steps.check.outputs.current_uuid }}"
             }
