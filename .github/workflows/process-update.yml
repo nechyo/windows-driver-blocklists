@@ -8,6 +8,10 @@ on:
         required: true
         type: string
         description: 'Update name to process'
+      current_uuid:
+        required: true
+        type: string
+        description: 'Current uuid to process'
 
 permissions:
   contents: write
@@ -62,7 +66,7 @@ jobs:
           release_name: ${{ inputs.update_name }}
           file: "*/driversipolicy.(p7b|xml)"
           body: |
-            Driver Policy Update: ${{ inputs.update_name }}
+            Driver Policy Update: ${{ inputs.update_name }}-${{ inputs.current_uuid }}
 
             This release includes an updated driver blocklist policy file:
             - Filename: driversipolicy.p7b
