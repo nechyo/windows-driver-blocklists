@@ -1,4 +1,5 @@
 git clone https://github.com/nechyo/WDACTools
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted
 Import-Module .\WDACTools\WDACTools.psm1
 # output/*.p7b 파일을 blacklists/*.xml로 변환하는 스크립트
 $inputDirectory = "output"
