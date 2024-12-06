@@ -46,7 +46,7 @@ jobs:
         if: steps.check.outputs.update_needed == 'true'
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: process-update.yml
+          workflow: "Process Driver Policy Update"
           repo: nechyo/windows-driver-blocklists
           inputs: |
             {
