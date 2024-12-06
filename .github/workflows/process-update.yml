@@ -58,7 +58,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.update_name }}
+          tag: ${{ github.ref }}
+          release_name: ${{ inputs.update_name }}
           file: "*/driversipolicy.(p7b|xml)"
           body: |
             Driver Policy Update: ${{ inputs.update_name }}
