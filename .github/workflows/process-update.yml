@@ -64,12 +64,13 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
           release_name: ${{ inputs.update_name }}
+          file_glob: true
           file: "*/driversipolicy.(p7b|xml)"
           body: |
             Driver Policy Update: ${{ inputs.update_name }}-${{ inputs.current_uuid }}
 
             This release includes an updated driver blocklist policy file:
-            - Filename: driversipolicy.p7b
+            - Filename: driversipolicy.p7b and driversipolicy.xml
             - Purpose: Enhanced security and compatibility.
             
             Please download the file and use it in your environment as necessary.
