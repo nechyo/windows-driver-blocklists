@@ -65,7 +65,7 @@ jobs:
           tag: ${{ github.ref }}
           release_name: ${{ inputs.update_name }}
           file_glob: true
-          file: "*/driversipolicy.(p7b|xml)"
+          file: "*/driversipolicy.{p7b,xml}"
           body: |
             Driver Policy Update: ${{ inputs.update_name }}-${{ inputs.current_uuid }}
 
