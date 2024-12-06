@@ -48,7 +48,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.update_name }}
-          path: output/driversipolicy.p7b,blacklists/driversipolicy.xml
+          path: |
+            output/driversipolicy.p7b
+            blacklists/driversipolicy.xml
           retention-days: 90
           if-no-files-found: error
 
@@ -57,7 +59,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ inputs.update_name }}
-          file: output/driversipolicy.p7b,blacklists/driversipolicy.xml
+          file: "*/driversipolicy.(p7b|xml)"
           body: |
             Driver Policy Update: ${{ inputs.update_name }}
 
