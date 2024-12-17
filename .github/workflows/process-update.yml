@@ -48,6 +48,14 @@ jobs:
           ./process-p7b.ps1
         shell: powershell
 
+      - name: Create and push tag
+        id: create_tag
+        run: |
+          TAG_NAME="driver-update-${{ inputs.current_uuid }}"
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
       - name: Upload Driver Policy Update
         uses: actions/upload-artifact@v4
         with:
@@ -62,7 +70,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
+          tag: ${{ env.TAG_NAME }}
           release_name: ${{ inputs.update_name }}
           file_glob: true
           file: "*/driversipolicy.{p7b,xml}"
