@@ -50,6 +50,7 @@ jobs:
 
       - name: Create and push tag
         id: create_tag
+        shell: pwsh
         run: |
           TAG_NAME="driver-update-${{ inputs.current_uuid }}"
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
